@@ -198,7 +198,7 @@ class Pilots(models.Model):
 class Seats(models.Model):
     place_id = models.AutoField(primary_key=True, blank=True)
     plane = models.ForeignKey(Aircraft, models.DO_NOTHING, db_column='plane', blank=True, null=True)
-    place_number = models.IntegerField(unique=True, blank=True, null=True)
+    place_number = models.IntegerField(blank=True, null=True)
     place_class = models.TextField(blank=True, null=True)
     place_price = models.IntegerField(blank=True, null=True)
 
