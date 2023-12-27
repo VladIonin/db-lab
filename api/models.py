@@ -1,18 +1,21 @@
 from django.db import models
 
 
-class Aircraft(models.Model):
+class AircraftTypes(models.Model):
     aircraft_id = models.AutoField(primary_key=True, blank=True)
-    type = models.ForeignKey('AircraftTypes', models.DO_NOTHING, db_column='type', blank=True, null=True)
+    type = models.ForeignKey('Aircraft', models.DO_NOTHING, db_column='type', blank=True, null=True)
 
     class Meta:
         managed = False
         db_table = 'Aircraft'
 
 
-class AircraftTypes(models.Model):
+class Aircraft(models.Model):
     name = models.TextField(unique=True, blank=True, null=True)
     passenger_capacity = models.IntegerField(blank=True, null=True)
+
+    def __str__(self):
+        return f'{self.id} | {self.name}'
 
     class Meta:
         managed = False
@@ -23,6 +26,9 @@ class Airports(models.Model):
     airport_id = models.AutoField(primary_key=True, blank=True)
     airport_code = models.TextField(blank=True, null=True)
     city = models.ForeignKey('Cities', models.DO_NOTHING, db_column='city', blank=True, null=True)
+
+    def __str__(self):
+        return self.airport_code
 
     class Meta:
         managed = False
@@ -44,6 +50,9 @@ class Baggage(models.Model):
     booking = models.ForeignKey('Booking', models.DO_NOTHING, db_column='booking', blank=True, null=True)
     weight_in_kilogram = models.IntegerField(blank=True, null=True)
 
+    def __str__(self):
+        return f'{self.weight_in_kilogram}kg | {self.booking}'
+
     class Meta:
         managed = False
         db_table = 'Baggage'
@@ -55,6 +64,9 @@ class Booking(models.Model):
     passenger = models.ForeignKey('Passengers', models.DO_NOTHING, db_column='passenger', blank=True, null=True)
     booking_status = models.BooleanField(blank=True, null=True)
 
+    def __str__(self):
+        return f'{self.ticket} | {self.passenger}'
+
     class Meta:
         managed = False
         db_table = 'Booking'
@@ -63,6 +75,9 @@ class Booking(models.Model):
 class Cities(models.Model):
     city_id = models.AutoField(primary_key=True, blank=True)
     name = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         managed = False
@@ -91,8 +106,10 @@ class EventTypes(models.Model):
 
 class Events(models.Model):
     event_id = models.AutoField(primary_key=True, blank=True)
-    event_type = models.ForeignKey(EventTypes, models.DO_NOTHING, db_column='event', to_field=None, blank=True, null=True)
-    scene_of_accident = models.ForeignKey(Aircraft, models.DO_NOTHING, db_column='scene_of_accident', blank=True, null=True)
+    event_type = models.ForeignKey(EventTypes, models.DO_NOTHING, db_column='event', to_field=None, blank=True,
+                                   null=True)
+    scene_of_accident = models.ForeignKey(Aircraft, models.DO_NOTHING, db_column='scene_of_accident', blank=True,
+                                          null=True)
 
     class Meta:
         managed = False
@@ -117,9 +134,14 @@ class Flights(models.Model):
     flight_delay_in_hours = models.IntegerField(blank=True, null=True)
     time_of_arrival = models.TextField(blank=True, null=True)  # This field type is a guess.
     time_of_departure = models.TextField(blank=True, null=True)  # This field type is a guess.
-    airport_of_arrive = models.ForeignKey(Airports, models.DO_NOTHING, db_column='airport_of_arrive', blank=True, null=True)
-    airport_of_departure = models.ForeignKey(Airports, models.DO_NOTHING, db_column='airport_of_departure', related_name='flights_airport_of_departure_set', blank=True, null=True)
+    airport_of_arrive = models.ForeignKey(Airports, models.DO_NOTHING, db_column='airport_of_arrive', blank=True,
+                                          null=True)
+    airport_of_departure = models.ForeignKey(Airports, models.DO_NOTHING, db_column='airport_of_departure',
+                                             related_name='flights_airport_of_departure_set', blank=True, null=True)
     distance_traveled = models.IntegerField(blank=True, null=True)
+
+    def __str__(self):
+        return self.flight_number
 
     class Meta:
         managed = False
@@ -128,6 +150,9 @@ class Flights(models.Model):
 
 class JobTitle(models.Model):
     name = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         managed = False
@@ -163,6 +188,9 @@ class Passengers(models.Model):
     passport = models.IntegerField(blank=True, null=True)
     name = models.TextField(blank=True, null=True)
 
+    def __str__(self):
+        return f'{self.name} | {self.passport}'
+
     class Meta:
         managed = False
         db_table = 'Passengers'
@@ -177,6 +205,9 @@ class Personal(models.Model):
     salary = models.IntegerField(blank=True, null=True)
     start_of_work = models.DateField(blank=True, null=True)
 
+    def __str__(self):
+        return f'{self.name} | {self.job_title}'
+
     class Meta:
         managed = False
         db_table = 'Personal'
@@ -189,6 +220,9 @@ class Pilots(models.Model):
     hours_passed = models.IntegerField(blank=True, null=True)
     airport_of_work = models.ForeignKey(Airports, models.DO_NOTHING, db_column='airport_of_work', blank=True, null=True)
     salary = models.IntegerField(blank=True, null=True)
+
+    def __str__(self):
+        return f'{self.pilot_id} | {self.name_of_pilot} | {self. hours_passed}h'
 
     class Meta:
         managed = False
@@ -212,6 +246,9 @@ class Tickets(models.Model):
     flight = models.ForeignKey(Flights, models.DO_NOTHING, db_column='flight', blank=True, null=True)
     siting_place = models.ForeignKey(Seats, models.DO_NOTHING, db_column='siting_place', blank=True, null=True)
     ticket_date = models.TextField(blank=True, null=True)  # This field type is a guess.
+
+    def __str__(self):
+        return f'{self.flight} | {self.ticket_date}'
 
     class Meta:
         managed = False

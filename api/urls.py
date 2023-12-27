@@ -1,15 +1,30 @@
 from django.urls import path, include
-from .views import aircraft_by_capacity, total_distance, pilots_by_airport, fire_them, passengers_by_flight, flights
+from rest_framework import routers
+from .views import *
+
+router = routers.DefaultRouter()
+router.register(r'aircraft', AircraftViewSet)
+router.register(r'airport', AirportsViewSet)
+
+router.register(r'seat', SeatsViewSet)
+router.register(r'animal', AnimalsViewSet)
+router.register(r'booking', BookingViewSet)
+router.register(r'baggage', BaggageViewSet)
+router.register(r'ticket', TicketsViewSet)
+router.register(r'flight', FlightsViewSet)
+router.register(r'passenger', PassengersViewSet)
+
+router.register(r'odometer', OdometerReadingViewSet)
+router.register(r'engine', EnginesViewSet)
+router.register(r'pilot', PilotsViewSet)
+router.register(r'personal', PersonalViewSet)
+router.register(r'maintenance', MaintenanceReadingViewSet)
 
 urlpatterns = [
-    path('flights/', flights, name='flights'),                                                   # Only admin
-
-    path('auth/', include('rest_framework.urls')),                                               # Anybody
-    path('capacity/<int:capacity>', aircraft_by_capacity, name='aircraft_by_capacity'),          # Anybody
-    path('dist/<int:aircraft_id>', total_distance, name='total_distance'),                       # Anybody
-
-    path('pilots/<int:airport_id>', pilots_by_airport, name='pilots_by_airport'),                # Authenticated users
-    path('fire_them/', fire_them, name='fire_them'),  # Authenticated users
-    path('passengers/<str:flight_number>/', passengers_by_flight, name='passengers_by_flight'),  # Authenticated users
-
+    path('', include(router.urls)),
+    path('drf-auth/', include('rest_framework.urls'))
+    # path('aircraft-by-capacity/<int:capacity>', aircraft_by_capacity),
+    # path('total-dist/<int:aircraft_id>', total_distance),
+    # path('pilots-by-airport/<int:airport_id>', pilots_by_airport),
+    # path('passengers_by_flight/<str:flight_number>', passengers_by_flight),
 ]
